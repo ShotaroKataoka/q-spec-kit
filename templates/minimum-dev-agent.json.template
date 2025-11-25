@@ -1,0 +1,41 @@
+{
+  "name": "{{AGENT_NAME}}",
+  "description": "Q-SPEC Kit-optimized development agent with SPEC-driven workflow",
+  "mcpServers": {},
+  "tools": [
+    "fs_read",
+    "fs_write", 
+    "execute_bash"
+  ],
+  "allowedTools": [
+    "fs_read",
+    "execute_bash"
+  ],
+  "toolsSettings": {
+    "execute_bash": {
+      "allowedCommands": [
+        "git status", "git log", "git diff", "git show", "git branch", "git checkout",
+        "git add", "git commit", "git pull", "git fetch", "git stash",
+        "git tag", "git remote", "git config", "git blame", "git ls-files",
+        "find", "grep", "ls", "cat", "head", "tail", "tree", "wc", "sort", "uniq",
+        "python", "python3", "pip", "pytest", "coverage", "black", "flake8", "mypy",
+        "mkdir", "cp", "mv", "rm", "chmod", "echo", "pwd", "which", "date"
+      ]
+    }
+  },
+  "resources": [
+    "file://{{REPO_PATH}}/contexts/git_rules.md",
+    "file://{{REPO_PATH}}/contexts/spec_rules_en.md",
+    "file://{{REPO_PATH}}/contexts/user_preference_{{AGENT_NAME}}.md"
+  ],
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "if [ -d .kiro/steering ]; then echo '=== Project Steering ==='; for file in .kiro/steering/*.md; do if [ -f \"$file\" ]; then echo \"--- $(basename \"$file\") ---\"; cat \"$file\"; echo; fi; done; fi",
+        "timeout_ms": 10000,
+        "cache_ttl_seconds": 300,
+        "max_output_size": 16384
+      }
+    ]
+  }
+}

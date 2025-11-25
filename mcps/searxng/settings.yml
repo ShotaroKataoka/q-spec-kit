@@ -1,0 +1,33 @@
+use_default_settings: true
+
+general:
+  instance_name: "Q-SPEC Kit SearXNG"
+  
+server:
+  secret_key: "changeme"  # Change this in production
+  limiter: false
+  image_proxy: true
+
+search:
+  safe_search: 0
+  autocomplete: ""
+  default_lang: "all"
+  formats:
+    - html
+    - json
+  
+ui:
+  static_use_hash: true
+  default_theme: simple
+  theme_args:
+    simple_style: auto
+
+engines:
+  - name: google
+    disabled: false
+  - name: duckduckgo
+    disabled: false
+  - name: wikipedia
+    disabled: false
+  - name: github
+    disabled: false

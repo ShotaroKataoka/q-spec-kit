@@ -19,7 +19,7 @@ NC='\033[0m' # No Color
 
 # Get absolute path of current directory
 REPO_PATH=$(pwd)
-AGENTS_DIR="$HOME/.aws/amazonq/cli-agents"
+AGENTS_DIR="$HOME/.kiro/agents"
 TEMPLATE_PATH=""  # Will be set by select_template()
 
 # ============================================================================
@@ -278,6 +278,24 @@ setup_mcp_servers() {
     # Remove duplicates
     selected_mcps=($(printf "%s\n" "${selected_mcps[@]}" | sort -u))
     
+    # Check Docker dependency for searxng
+    for key in "${selected_mcps[@]}"; do
+        if [ "$key" = "searxng" ]; then
+            if ! command -v docker &> /dev/null; then
+                print_error "Docker is required for SearXNG but not installed"
+                print_info "Install Docker: https://docs.docker.com/get-docker/"
+                exit 1
+            fi
+            if ! docker compose version &> /dev/null; then
+                print_error "Docker Compose is required for SearXNG but not available"
+                print_info "Install Docker Compose: https://docs.docker.com/compose/install/"
+                exit 1
+            fi
+            print_success "Docker and Docker Compose are installed"
+            break
+        fi
+    done
+    
     # Build MCP servers JSON, tools array, and allowed tools
     if [ ${#selected_mcps[@]} -gt 0 ]; then
         MCP_JSON="{"
@@ -297,7 +315,7 @@ setup_mcp_servers() {
             first=false
             
             local name=$(jq -r ".recommended.\"$key\".name" "$MCP_CONFIG_FILE")
-            local config=$(jq -c ".recommended.\"$key\".config" "$MCP_CONFIG_FILE")
+            local config=$(jq -c ".recommended.\"$key\".config" "$MCP_CONFIG_FILE" | sed "s|{{REPO_PATH}}|${REPO_PATH}|g")
             MCP_JSON="${MCP_JSON}\"${name}\":${config}"
             MCP_TOOLS="${MCP_TOOLS}\"@${name}\""
             
@@ -489,7 +507,7 @@ verify_contexts() {
 setup_alias() {
     print_header "🔧 Shell Alias Setup"
     
-    if ! prompt_yes_no "Set up a shell alias for 'q chat --agent ${agent_name}'?" "Y"; then
+    if ! prompt_yes_no "Set up a shell alias for 'kiro-cli chat --agent ${agent_name}'?" "Y"; then
         echo  # Add newline after input
         print_info "Skipping alias setup"
         return
@@ -524,7 +542,7 @@ setup_alias() {
     if [ -z "$shell_config" ]; then
         print_warning "Could not determine shell config file"
         echo -e "${CYAN}💡 Manually add this alias to your shell config:${NC}"
-        echo -e "${GREEN}alias your_alias='q chat --agent ${agent_name}'${NC}"
+        echo -e "${GREEN}alias your_alias='kiro-cli chat --agent ${agent_name}'${NC}"
         return
     fi
     
@@ -532,7 +550,7 @@ setup_alias() {
     local alias_name=$(prompt_input "Enter alias name" "qcd")
     echo  # Add newline after input
     
-    local alias_line="alias ${alias_name}='q chat --agent ${agent_name}'"
+    local alias_line="alias ${alias_name}='kiro-cli chat --agent ${agent_name}'"
     
     # Check if alias already exists
     if [ -f "$shell_config" ] && grep -q "alias ${alias_name}=" "$shell_config"; then
@@ -583,7 +601,7 @@ show_summary() {
     echo
     echo -e "${CYAN}Next steps:${NC}"
     echo "  1. Start using your agent:"
-    echo -e "     ${GREEN}q chat --agent ${agent_name}${NC}"
+    echo -e "     ${GREEN}kiro-cli chat --agent ${agent_name}${NC}"
     if [ -n "$ALIAS_NAME" ] && [ -n "$SHELL_CONFIG" ]; then
         echo -e "     ${GREEN}${ALIAS_NAME}${NC} (after sourcing shell config)"
     fi

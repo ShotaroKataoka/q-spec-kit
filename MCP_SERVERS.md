@@ -21,7 +21,7 @@ This file documents the recommended MCP (Model Context Protocol) servers for Q-S
    - allowedTools (auto-approved tools)
    ↓
 5. Agent configuration is generated at:
-   ~/.aws/amazonq/cli-agents/{agent-name}.json
+   ~/.kiro/agents/{agent-name}.json
 ```
 
 ### File Structure
@@ -162,7 +162,7 @@ If you need to add an MCP server after running setup.sh:
 
 ```bash
 # Edit your agent configuration
-vim ~/.aws/amazonq/cli-agents/your-agent-name.json
+vim ~/.kiro/agents/your-agent-name.json
 ```
 
 Add your MCP server to the `mcpServers` section and update `tools` and `allowedTools`:

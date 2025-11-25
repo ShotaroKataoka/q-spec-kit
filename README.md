@@ -27,7 +27,7 @@ cd q-spec-kit
 - エージェント名の選択（複数エージェント対応）
 - カスタムエージェント設定の生成
 - 推奨MCPサーバーの選択（オプション）
-- `~/.aws/amazonq/cli-agents/`への配置
+- `~/.kiro/agents/`への配置
 - シェルエイリアスの設定（オプション）
 
 ### 3. エージェント起動
@@ -50,7 +50,7 @@ q chat --agent dev-agent
 
 ### エージェント設定の調整
 
-`~/.aws/amazonq/cli-agents/dev-agent.json`を編集：
+`~/.kiro/agents/dev-agent.json`を編集：
 - 許可コマンドの追加・削除
 - ファイル書き込み範囲の調整
 - リソース読み込みの変更

@@ -67,6 +67,29 @@
         "@duckduckgo-mcp-server/search",
         "@duckduckgo-mcp-server/fetch_content"
       ]
+    },
+    "searxng": {
+      "name": "mcp-searxng",
+      "description": "Self-hosted SearXNG search engine (auto-starts with Docker)",
+      "config": {
+        "command": "docker",
+        "args": [
+          "run",
+          "-i",
+          "--rm",
+          "--network", "host",
+          "-e", "SEARXNG_URL",
+          "isokoliuk/mcp-searxng:latest"
+        ],
+        "env": {
+          "SEARXNG_URL": "http://localhost:8080"
+        },
+        "timeout": 30000
+      },
+      "recommended_allowed_tools": [
+        "@mcp-searxng/searxng_web_search",
+        "@mcp-searxng/web_url_read"
+      ]
     }
   }
 }
