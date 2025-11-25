@@ -33,7 +33,7 @@ cd q-spec-kit
 ### 3. エージェント起動
 
 ```bash
-q chat --agent dev-agent
+kiro-cli chat --agent dev-agent
 # または設定したエイリアス（例: qcd）
 ```
 
